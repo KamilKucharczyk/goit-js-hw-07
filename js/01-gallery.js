@@ -17,7 +17,7 @@ galleryItems.forEach((galleryItem) => {
   alt = "${galleryItem.description}"/>
 </a>`;
 
-  listItem.insertAdjacentHTML(beforeend, innerString);
+  listItem.insertAdjacentHTML("beforeend", innerString);
   listArray.push(listItem);
 });
 
@@ -29,23 +29,27 @@ galleryContainer.addEventListener("click", (event) => {
   if (!event.target.dataset.source) {
     return;
   }
-});
 
-const instance = basicLightbox.create(
-  `
+  const instance = basicLightbox.create(
+    `
     <img src="${event.target.dataset.source}" width="800" height="600">
 `,
-  {
-    onShow: (instance) => {
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          instance.close();
-        }
-        document.removeEventListener("keydown", event);
-      });
-    },
-  }
-);
-instance.show();
+    {
+      onShow: () => {
+        document.addEventListener("keydown", handler);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", handler);
+      },
+    }
+  );
+  const handler = (e) => {
+    if (e.key === "Escape") {
+      instance.close();
+    }
+  };
+
+  instance.show();
+});
 
 console.log(galleryItems);
